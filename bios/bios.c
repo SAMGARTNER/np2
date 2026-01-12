@@ -21,6 +21,7 @@
 #include "itfrom.res"
 #include "startup.res"
 #include "biosfd80.res"
+#include <stdio.h>
 
 
 #define	BIOS_SIMULATE
@@ -95,7 +96,7 @@ static void bios_reinitbyswitch(void) {
 
 	if (!(pccore.dipsw[2] & 0x80)) {
 #if defined(CPUCORE_IA32)
-		mem[MEMB_SYS_TYPE] = 0x03;		// 80386Å`
+		mem[MEMB_SYS_TYPE] = 0x03;		// 80386„Äú
 #else
 		mem[MEMB_SYS_TYPE] = 0x01;		// 80286
 #endif
@@ -238,7 +239,7 @@ void bios_initialize(void) {
 	if (biosrom) {
 		TRACEOUT(("load bios.rom"));
 		pccore.rom |= PCROM_BIOS;
-		// PnP BIOSÇí◊Ç∑
+		// PnP BIOS„ÇíÊΩ∞„Åô
 		for (i=0; i<0x10000; i+=0x10) {
 			tmp = LOADINTELDWORD(mem + 0xf0000 + i);
 			if (tmp == 0x506e5024) {
@@ -264,7 +265,7 @@ void bios_initialize(void) {
 	fh = file_open_rb(path);
 	if (fh != FILEH_INVALID) {
 		if (file_read(fh, mem + 0x0d8000, 0x2000) == 0x2000) {
-			// IDE BIOSÇí◊Ç∑
+			// IDE BIOS„ÇíÊΩ∞„Åô
 			TRACEOUT(("load bios9821.rom"));
 			STOREINTELWORD(mem + 0x0d8009, 0);
 		}
@@ -278,7 +279,7 @@ void bios_initialize(void) {
 	mem[0xf8e84] = 0x2c;
 	mem[0xf8e85] = 0xb0;
 
-	// mem[0xf8eaf] = 0x21;		// <- Ç±ÇÍÇ¡ÇƒâΩÇæÇ¡ÇØÅH
+	// mem[0xf8eaf] = 0x21;		// <- „Åì„Çå„Å£„Å¶‰Ωï„Å†„Å£„ÅëÔºü
 #endif
 #endif
 
@@ -358,6 +359,7 @@ static void bios_itfcall(void) {
 
 
 UINT MEMCALL biosfunc(UINT32 adrs) {
+    printf("[BIOS] Call address: 0x%08x (offset 0x%04x)\n", adrs, adrs - BIOS_BASE);
 
 	UINT16	bootseg;
 
@@ -386,11 +388,11 @@ UINT MEMCALL biosfunc(UINT32 adrs) {
 #endif
 
 	switch(adrs) {
-		case BIOS_BASE + BIOSOFST_ITF:		// ÉäÉZÉbÉg
+		case BIOS_BASE + BIOSOFST_ITF:		// „É™„Çª„ÉÉ„Éà
 			bios_itfcall();
 			return(1);
 
-		case BIOS_BASE + BIOSOFST_INIT:		// ÉuÅ[Ég
+		case BIOS_BASE + BIOSOFST_INIT:		// „Éñ„Éº„Éà
 #if 1		// for RanceII
 			bios_memclear();
 #endif
@@ -468,7 +470,7 @@ UINT MEMCALL biosfunc(UINT32 adrs) {
 			CPU_STI;
 			return(bios0x1b_wait());								// ver0.78
 
-		case 0xfffe8:					// ÉuÅ[ÉgÉXÉgÉâÉbÉvÉçÅ[Éh
+		case 0xfffe8:					// „Éñ„Éº„Éà„Çπ„Éà„É©„ÉÉ„Éó„É≠„Éº„Éâ
 			CPU_REMCLOCK -= 2000;
 			bootseg = bootstrapload();
 			if (bootseg) {
@@ -478,6 +480,12 @@ UINT MEMCALL biosfunc(UINT32 adrs) {
 				return(1);
 			}
 			return(0);
+            
+        if (adrs == 0xfffe8 || adrs == 0xfffec) {
+            REG16 seg = bootstrapload();
+            printf("[BIOS] Bootstrap load result: seg=0x%04x (%s)\n",
+                   seg, seg ? "success" : "FAILED - no disk/font issue likely");
+        }
 
 		case 0xfffec:
 			CPU_REMCLOCK -= 2000;
@@ -496,6 +504,7 @@ UINT MEMCALL biosfunc(UINT32 adrs) {
 			return(1);
 		}
 	}
+    printf("[BIOS] Unhandled BIOS call: 0x%08x\n", adrs);
 	return(0);
 }
 

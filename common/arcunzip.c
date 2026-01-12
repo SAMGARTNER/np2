@@ -2,6 +2,7 @@
 #include	"dosio.h"
 #include	"arc.h"
 #include	"arcunzip.h"
+#include <stdlib.h>
 #if defined(SUPPORT_ZLIB)
 #include	"zlib.h"
 #endif

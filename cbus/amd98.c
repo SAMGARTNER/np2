@@ -13,6 +13,7 @@
 #include "sound.h"
 #include "sound/pcmmix.h"
 #include "joymng.h"
+#include <stdlib.h>
 
 	AMD98	g_amd98;
 

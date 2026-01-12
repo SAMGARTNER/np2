@@ -1,12 +1,12 @@
 
 #if defined(SIZE_QVGA)
 enum {
-	DLGABOUT_WIDTH	= 232,
+	DLGABOUT_WIDTH	= 240,
 	DLGABOUT_HEIGHT	= 40
 };
 #else
 enum {
-	DLGABOUT_WIDTH	= 342,
+	DLGABOUT_WIDTH	= 350,
 	DLGABOUT_HEIGHT	= 58
 };
 #endif

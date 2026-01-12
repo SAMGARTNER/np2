@@ -10,43 +10,44 @@
 #include	"menubase.h"
 #include	"menustr.h"
 
-
+static BOOL showhidden = FALSE;
 enum {
 	DID_FOLDER	= DID_USER,
 	DID_PARENT,
 	DID_FLIST,
 	DID_FILE,
-	DID_FILTER
+	DID_FILTER,
+    DID_SHOWHIDDEN
 };
 
 #if defined(OSLANG_SJIS) && !defined(RESOURCE_US)
-static const OEMCHAR str_dirname[] =			// ƒtƒ@ƒCƒ‹‚ÌêŠ
+static const OEMCHAR str_dirname[] =			// ãƒ•ã‚¡ã‚¤ãƒ«ã®å ´æ‰€
 			"\203\164\203\100\203\103\203\213\202\314\217\352\217\212";
-static const OEMCHAR str_filename[] =			// ƒtƒ@ƒCƒ‹–¼
+static const OEMCHAR str_filename[] =			// ãƒ•ã‚¡ã‚¤ãƒ«å
 			"\203\164\203\100\203\103\203\213\226\274";
-static const OEMCHAR str_filetype[] =			// ƒtƒ@ƒCƒ‹‚ÌŽí—Þ
+static const OEMCHAR str_filetype[] =			// ãƒ•ã‚¡ã‚¤ãƒ«ã®ç¨®é¡ž
 			"\203\164\203\100\203\103\203\213\202\314\216\355\227\336";
-static const OEMCHAR str_open[] =				// ŠJ‚­
+static const OEMCHAR str_open[] =				// é–‹ã
 			"\212\112\202\255";
 #elif defined(OSLANG_EUC) && !defined(RESOURCE_US)
-static const OEMCHAR str_dirname[] =			// ƒtƒ@ƒCƒ‹‚ÌêŠ
+static const OEMCHAR str_dirname[] =			// ãƒ•ã‚¡ã‚¤ãƒ«ã®å ´æ‰€
 			"\245\325\245\241\245\244\245\353\244\316\276\354\275\352";
-static const OEMCHAR str_filename[] =			// ƒtƒ@ƒCƒ‹–¼
+static const OEMCHAR str_filename[] =			// ãƒ•ã‚¡ã‚¤ãƒ«å
 			"\245\325\245\241\245\244\245\353\314\276";
-static const OEMCHAR str_filetype[] =			// ƒtƒ@ƒCƒ‹‚ÌŽí—Þ
+static const OEMCHAR str_filetype[] =			// ãƒ•ã‚¡ã‚¤ãƒ«ã®ç¨®é¡ž
 			"\245\325\245\241\245\244\245\353\244\316\274\357\316\340";
-static const OEMCHAR str_open[] =				// ŠJ‚­
+static const OEMCHAR str_open[] =				// é–‹ã
 			"\263\253\244\257";
 #elif defined(OSLANG_UTF8) && !defined(RESOURCE_US)
-static const OEMCHAR str_dirname[] =			// ƒtƒ@ƒCƒ‹‚ÌêŠ
+static const OEMCHAR str_dirname[] =			// ãƒ•ã‚¡ã‚¤ãƒ«ã®å ´æ‰€
 			"\343\203\225\343\202\241\343\202\244\343\203\253\343\201\256" \
 			"\345\240\264\346\211\200";
-static const OEMCHAR str_filename[] =			// ƒtƒ@ƒCƒ‹–¼
+static const OEMCHAR str_filename[] =			// ãƒ•ã‚¡ã‚¤ãƒ«å
 			"\343\203\225\343\202\241\343\202\244\343\203\253\345\220\215";
-static const OEMCHAR str_filetype[] =			// ƒtƒ@ƒCƒ‹‚ÌŽí—Þ
+static const OEMCHAR str_filetype[] =			// ãƒ•ã‚¡ã‚¤ãƒ«ã®ç¨®é¡ž
 			"\343\203\225\343\202\241\343\202\244\343\203\253\343\201\256" \
 			"\347\250\256\351\241\236";
-static const OEMCHAR str_open[] =				// ŠJ‚­
+static const OEMCHAR str_open[] =				// é–‹ã
 			"\351\226\213\343\201\217";
 #else
 static const OEMCHAR str_dirname[] = OEMTEXT("Look in");
@@ -57,56 +58,62 @@ static const OEMCHAR str_open[] = OEMTEXT("Open");
 
 #if defined(SIZE_QVGA)
 enum {
-	DLGFS_WIDTH		= 294,
-	DLGFS_HEIGHT	= 187
+    DLGFS_WIDTH        = 294,
+    DLGFS_HEIGHT    = 187
 };
 static const MENUPRM res_fs[] = {
-			{DLGTYPE_LTEXT,		DID_STATIC,		0,
-				str_dirname,							  6,   9,  68,  11},
-			{DLGTYPE_EDIT,		DID_FOLDER,		0,
-				NULL,									 74,   6, 192,  16},
-			{DLGTYPE_BUTTON,	DID_PARENT,		MENU_TABSTOP,
-				NULL,									272,   6,  16,  16},
-			{DLGTYPE_LIST,		DID_FLIST,		MENU_TABSTOP,
-				NULL,									  5,  28, 284, 115},
-			{DLGTYPE_LTEXT,		DID_STATIC,		0,
-				str_filename,							  6, 150,  68,  11},
-			{DLGTYPE_EDIT,		DID_FILE,		0,
-				NULL,									 74, 147, 159,  16},
-			{DLGTYPE_LTEXT,		DID_STATIC,		0,
-				str_filetype,							  6, 169,  68,  11},
-			{DLGTYPE_EDIT,		DID_FILTER,		0,
-				NULL,									 74, 166, 159,  16},
-			{DLGTYPE_BUTTON,	DID_OK,			MENU_TABSTOP,
-				str_open,								237, 147,  52,  15},
-			{DLGTYPE_BUTTON,	DID_CANCEL,		MENU_TABSTOP,
-				mstr_cancel,							237, 166,  52,  15}};
+            {DLGTYPE_LTEXT,        DID_STATIC,        0,
+                str_dirname,                              6,   9,  68,  11},
+            {DLGTYPE_EDIT,        DID_FOLDER,        0,
+                NULL,                                     74,   6, 192,  16},
+            {DLGTYPE_BUTTON,    DID_PARENT,        MENU_TABSTOP,
+                NULL,                                    272,   6,  16,  16},
+            {DLGTYPE_CHECK,        DID_SHOWHIDDEN,    MENU_TABSTOP,
+                OEMTEXT("Show hidden files"),        100,   6, 160,  16},  // left of parent button
+            {DLGTYPE_LIST,        DID_FLIST,        MENU_TABSTOP,
+                NULL,                                      5,  28, 284, 115},
+            {DLGTYPE_LTEXT,        DID_STATIC,        0,
+                str_filename,                              6, 150,  68,  11},
+            {DLGTYPE_EDIT,        DID_FILE,        0,
+                NULL,                                     74, 147, 159,  16},
+            {DLGTYPE_LTEXT,        DID_STATIC,        0,
+                str_filetype,                              6, 169,  68,  11},
+            {DLGTYPE_EDIT,        DID_FILTER,        0,
+                NULL,                                     74, 166, 159,  16},
+            {DLGTYPE_BUTTON,    DID_OK,            MENU_TABSTOP,
+                str_open,                                237, 147,  52,  15},
+            {DLGTYPE_BUTTON,    DID_CANCEL,        MENU_TABSTOP,
+                mstr_cancel,                            237, 166,  52,  15}
+};
 #else
 enum {
-	DLGFS_WIDTH		= 499,
-	DLGFS_HEIGHT	= 227
+    DLGFS_WIDTH        = 499,
+    DLGFS_HEIGHT    = 227
 };
 static const MENUPRM res_fs[] = {
-			{DLGTYPE_LTEXT,		DID_STATIC,		0,
-				str_dirname,							 12,  10, 102,  13},
-			{DLGTYPE_EDIT,		DID_FOLDER,		0,
-				NULL,									114,   7, 219,  18},
-			{DLGTYPE_BUTTON,	DID_PARENT,		MENU_TABSTOP,
-				NULL,									348,   7,  18,  18},
-			{DLGTYPE_LIST,		DID_FLIST,		MENU_TABSTOP,
-				NULL,									  7,  30, 481, 128},
-			{DLGTYPE_LTEXT,		DID_STATIC,		0,
-				str_filename,							 12, 168, 104,  13},
-			{DLGTYPE_EDIT,		DID_FILE,		0,
-				NULL,									116, 165, 268,  18},
-			{DLGTYPE_LTEXT,		DID_STATIC,		0,
-				str_filetype,							 12, 192, 104,  13},
-			{DLGTYPE_EDIT,		DID_FILTER,		0,
-				NULL,									116, 189, 268,  18},
-			{DLGTYPE_BUTTON,	DID_OK,			MENU_TABSTOP,
-				str_open,								397, 165,  88,  23},
-			{DLGTYPE_BUTTON,	DID_CANCEL,		MENU_TABSTOP,
-				mstr_cancel,							397, 192,  88,  23}};
+            {DLGTYPE_LTEXT,        DID_STATIC,        0,
+                str_dirname,                             12,  10, 102,  13},
+            {DLGTYPE_EDIT,        DID_FOLDER,        0,
+                NULL,                                    114,   7, 219,  18},
+            {DLGTYPE_BUTTON,    DID_PARENT,        MENU_TABSTOP,
+                NULL,                                    340,   7,  32,  18},
+            {DLGTYPE_CHECK,        DID_SHOWHIDDEN,    MENU_TABSTOP,
+                OEMTEXT("Show hidden files"),        380,   7, 110,  18},  // right of parent button
+            {DLGTYPE_LIST,        DID_FLIST,        MENU_TABSTOP,
+                NULL,                                      7,  30, 481, 128},
+            {DLGTYPE_LTEXT,        DID_STATIC,        0,
+                str_filename,                             12, 168, 104,  13},
+            {DLGTYPE_EDIT,        DID_FILE,        0,
+                NULL,                                    116, 165, 268,  18},
+            {DLGTYPE_LTEXT,        DID_STATIC,        0,
+                str_filetype,                             12, 192, 104,  13},
+            {DLGTYPE_EDIT,        DID_FILTER,        0,
+                NULL,                                    116, 189, 268,  18},
+            {DLGTYPE_BUTTON,    DID_OK,            MENU_TABSTOP,
+                str_open,                                397, 165,  88,  23},
+            {DLGTYPE_BUTTON,    DID_CANCEL,        MENU_TABSTOP,
+                mstr_cancel,                            397, 192,  88,  23}
+};
 #endif
 
 struct _flist;
@@ -205,47 +212,56 @@ const OEMCHAR	*p;
 
 static void dlgsetlist(void) {
 
-	LISTARRAY	flist;
-	FLISTH		flh;
-	FLINFO		fli;
-	BOOL		append;
-	FLIST		fl;
-	ITEMEXPRM	prm;
+    LISTARRAY flist;
+    FLISTH flh;
+    FLINFO fli;
+    BOOL append;
+    FLIST fl;
+    ITEMEXPRM prm;
 
-	menudlg_itemreset(DID_FLIST);
-	menudlg_settext(DID_FOLDER, file_getname(filesel.path));
-	listarray_destroy(filesel.flist);
-	flist = listarray_new(sizeof(_FLIST), 64);
-	filesel.flist = flist;
-	filesel.fbase = NULL;
-	flh = file_list1st(filesel.path, &fli);
-	if (flh != FLISTH_INVALID) {
-		do {
-			append = FALSE;
-			if (fli.attr & 0x10) {
-				append = TRUE;
-			}
-			else if (!(fli.attr & 0x08)) {
-				append = checkext(fli.path, filesel.ext);
-			}
-			if (append) {
-				if (fappend(flist, &fli) != SUCCESS) {
-					break;
-				}
-			}
-		} while(file_listnext(flh, &fli) == SUCCESS);
-		file_listclose(flh);
-	}
-	prm.pos = 0;
-	fl = filesel.fbase;
-	while(fl) {
-		menudlg_itemappend(DID_FLIST, NULL);
-		prm.icon = (fl->isdir)?MICON_FOLDER:MICON_FILE;
-		prm.str = fl->name;
-		menudlg_itemsetex(DID_FLIST, &prm);
-		fl = fl->next;
-		prm.pos++;
-	}
+    menudlg_itemreset(DID_FLIST);
+    menudlg_settext(DID_FOLDER, file_getname(filesel.path));
+    listarray_destroy(filesel.flist);
+    flist = listarray_new(sizeof(_FLIST), 64);
+    filesel.flist = flist;
+    filesel.fbase = NULL;
+
+    flh = file_list1st(filesel.path, &fli);
+    if (flh != FLISTH_INVALID) {
+        do {
+            append = FALSE;
+
+            const OEMCHAR *basename = file_getname(fli.path);
+
+            /* Skip item only if it is dot-hidden AND checkbox is off */
+            if (showhidden || basename[0] != '.') {
+                if (fli.attr & 0x10) {                    /* directory */
+                    append = TRUE;
+                }
+                else if (!(fli.attr & 0x08)) {            /* not volume label */
+                    append = checkext(fli.path, filesel.ext);
+                }
+            }
+
+            if (append) {
+                if (fappend(flist, &fli) != SUCCESS) {
+                    break;
+                }
+            }
+        } while (file_listnext(flh, &fli) == SUCCESS);
+        file_listclose(flh);
+    }
+
+    prm.pos = 0;
+    fl = filesel.fbase;
+    while (fl) {
+        menudlg_itemappend(DID_FLIST, NULL);
+        prm.icon = (fl->isdir) ? MICON_FOLDER : MICON_FILE;
+        prm.str = fl->name;
+        menudlg_itemsetex(DID_FLIST, &prm);
+        fl = fl->next;
+        prm.pos++;
+    }
 }
 
 static void dlginit(void) {
@@ -292,52 +308,58 @@ static void dlgflist(void) {
 
 static int dlgcmd(int msg, MENUID id, long param) {
 
-	switch(msg) {
-		case DLGMSG_CREATE:
-			dlginit();
-			break;
+    switch(msg) {
+        case DLGMSG_CREATE:
+            dlginit();
+            break;
 
-		case DLGMSG_COMMAND:
-			switch(id) {
-				case DID_OK:
-					if (dlgupdate()) {
-						menubase_close();
-					}
-					break;
+        case DLGMSG_COMMAND:
+            if (id == DID_SHOWHIDDEN) {
+                showhidden = !showhidden;
+                dlgsetlist();
+                break;
+            }
 
-				case DID_CANCEL:
-					menubase_close();
-					break;
+            switch(id) {
+                case DID_OK:
+                    if (dlgupdate()) {
+                        menubase_close();
+                    }
+                    break;
 
-				case DID_PARENT:
-					file_cutname(filesel.path);
-					file_cutseparator(filesel.path);
-					dlgsetlist();
-					menudlg_settext(DID_FILE, NULL);
-					break;
+                case DID_CANCEL:
+                    menubase_close();
+                    break;
 
-				case DID_FLIST:
-					if (param) {
-						return(dlgcmd(DLGMSG_COMMAND, DID_OK, 0));
-					}
-					else {
-						dlgflist();
-					}
-					break;
-			}
-			break;
+                case DID_PARENT:
+                    file_cutname(filesel.path);
+                    file_cutseparator(filesel.path);
+                    dlgsetlist();
+                    menudlg_settext(DID_FILE, NULL);
+                    break;
 
-		case DLGMSG_CLOSE:
-			menubase_close();
-			break;
+                case DID_FLIST:
+                    if (param) {
+                        return(dlgcmd(DLGMSG_COMMAND, DID_OK, 0));
+                    }
+                    else {
+                        dlgflist();
+                    }
+                    break;
+            }
+            break;
 
-		case DLGMSG_DESTROY:
-			listarray_destroy(filesel.flist);
-			filesel.flist = NULL;
-			break;
-	}
-	(void)param;
-	return(0);
+        case DLGMSG_CLOSE:
+            menubase_close();
+            break;
+
+        case DLGMSG_DESTROY:
+            listarray_destroy(filesel.flist);
+            filesel.flist = NULL;
+            break;
+    }
+    (void)param;
+    return(0);
 }
 
 static BOOL selectfile(const FSELPRM *prm, OEMCHAR *path, int size, 
@@ -350,11 +372,15 @@ const OEMCHAR	*title;
 	if ((def) && (def[0])) {
 		file_cpyname(filesel.path, def, NELEMENTS(filesel.path));
 	}
-	else {
-		file_cpyname(filesel.path, file_getcd(str_null),
-													NELEMENTS(filesel.path));
-		file_cutname(filesel.path);
-	}
+    else {
+        const char *folder = SDL_GetUserFolder(SDL_FOLDER_HOME);
+        if (folder) {
+            file_cpyname(filesel.path, folder, NELEMENTS(filesel.path));
+        } else {
+            file_cpyname(filesel.path, file_getcd(str_null), NELEMENTS(filesel.path));
+            file_cutname(filesel.path);
+        }
+    }
 	title = NULL;
 	if (prm) {
 		title = prm->title;
@@ -378,7 +404,7 @@ const OEMCHAR	*title;
 
 static const OEMCHAR diskfilter[] = OEMTEXT("All supported files");
 static const OEMCHAR fddtitle[] = OEMTEXT("Select floppy image");
-static const OEMCHAR fddext[] = OEMTEXT("d88\0") OEMTEXT("88d\0") OEMTEXT("d98\0") OEMTEXT("98d\0") OEMTEXT("fdi\0") OEMTEXT("xdf\0") OEMTEXT("hdm\0") OEMTEXT("dup\0") OEMTEXT("2hd\0") OEMTEXT("tfd\0");
+static const OEMCHAR fddext[] = OEMTEXT("d88\0") OEMTEXT("88d\0") OEMTEXT("d98\0") OEMTEXT("98d\0") OEMTEXT("fdi\0") OEMTEXT("xdf\0") OEMTEXT("hdm\0") OEMTEXT("dup\0") OEMTEXT("2hd\0") OEMTEXT("tfd\0") ;
 static const OEMCHAR hddtitle[] = OEMTEXT("Select HDD image");
 static const OEMCHAR sasiext[] = OEMTEXT("thd\0") OEMTEXT("nhd\0") OEMTEXT("hdi\0");
 

@@ -6,7 +6,7 @@
 #include	"sound/pcmmix.h"
 #include	"fdd_mtr.res"
 #endif
-
+#include <stdlib.h>
 
 #if defined(SUPPORT_SWSEEKSND)
 

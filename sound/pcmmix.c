@@ -7,6 +7,8 @@
 #include "pcmmix.h"
 #include "getsnd/getsnd.h"
 #include "dosio.h"
+#include <stdlib.h>
+
 
 BRESULT pcmmix_regist(PMIXDAT *dat, void *datptr, UINT datsize, UINT rate) {
 

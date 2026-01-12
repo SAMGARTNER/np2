@@ -38,6 +38,7 @@
 #include "hostdrv.h"
 #include "calendar.h"
 #include "keystat.h"
+#include <stdlib.h>
 
 #if defined(MACOS)
 #define	CRCONST		str_cr

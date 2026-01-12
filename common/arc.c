@@ -2,6 +2,7 @@
 #include	"dosio.h"
 #include	"arc.h"
 #include	"arcunzip.h"
+#include <stdlib.h>
 #if defined(OSLANG_UCS2) || defined(OSLANG_UTF8)
 #include	"oemtext.h"
 #endif

@@ -2,7 +2,7 @@
 #include	"bmpdata.h"
 #include	"dipswbmp.h"
 #include	"dipswbmp.res"
-
+#include <stdlib.h>
 
 typedef struct {
 	BMPDATA	inf;

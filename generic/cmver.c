@@ -1,7 +1,7 @@
 #include	"compiler.h"
 #include	"commng.h"
 #include	"cmver.h"
-
+#include <stdlib.h>
 
 #if defined(VERMOUTH_LIB)
 

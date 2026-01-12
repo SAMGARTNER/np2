@@ -19,17 +19,17 @@ static const MENUPRM res_about[] = {
 			{DLGTYPE_ICON,		DID_ICON,		0,
 				(void *)MICON_NP2,						  7,   7,  24,  24},
 			{DLGTYPE_LTEXT,		DID_VER,		0,
-				NULL,									 40,  14, 128,  11},
+				NULL,									 40,  14, 140,  11},
 			{DLGTYPE_BUTTON,	DID_OK,			MENU_TABSTOP,
-				mstr_ok,								176,   8,  48,  15}};
+				mstr_ok,								180,   8,  48,  15}};
 #else
 static const MENUPRM res_about[] = {
 			{DLGTYPE_ICON,		DID_ICON,		0,
 				(void *)MICON_NP2,						 14,  12,  32,  32},
 			{DLGTYPE_LTEXT,		DID_VER,		0,
-				NULL,									 64,  24, 180,  13},
+				NULL,									 50,  24, 250,  13},
 			{DLGTYPE_BUTTON,	DID_OK,			MENU_TABSTOP,
-				mstr_ok,								258,  12,  70,  21}};
+				mstr_ok,								270,  18,  70,  21}};
 #endif
 
 

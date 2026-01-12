@@ -8,6 +8,7 @@
 #include "profile.h"
 #include "dosio.h"
 #include "textfile.h"
+#include <stdlib.h>
 #if defined(SUPPORT_TEXTCNV)
 #include "codecnv/textcnv.h"
 #endif

@@ -65,7 +65,7 @@ REG8 fmboard_getjoy(POPNA opna)
 		ret |= s_rapids;
 	}
 
-	// rapid‚Æ”ñrapid‚ğ‡¬								// ver0.28
+	// rapidã¨érapidã‚’åˆæˆ								// ver0.28
 	ret &= ((ret >> 2) | (~0x30));
 
 	if (np2cfg.BTN_MODE)
@@ -75,7 +75,7 @@ REG8 fmboard_getjoy(POPNA opna)
 		ret = (ret & (~0x30)) | bit1 | bit2;
 	}
 
-	// intr ”½‰f‚µ‚ÄI‚í‚è								// ver0.28
+	// intr åæ˜ ã—ã¦çµ‚ã‚ã‚Š								// ver0.28
 	ret &= 0x3f;
 	ret |= opna->s.intr;
 	return ret;

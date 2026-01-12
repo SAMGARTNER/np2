@@ -10,11 +10,11 @@
 
 #if defined(WIN32) || defined(_WIN32_WCE)
 
-	CRITICAL_SECTION g_sndcsec;
+ CRITICAL_SECTION g_sndcsec;
 
-#elif defined(MACOS)
+#elif defined(MACOS) || defined(__APPLE__)
 
-	MPCriticalRegionID g_sndcsec;
+	extern SDL_Mutex* g_sndcsec;
 
 #elif defined(X11)
 

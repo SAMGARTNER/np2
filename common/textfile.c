@@ -1,6 +1,7 @@
 #include	"compiler.h"
 #include	"strres.h"
 #include	"textfile.h"
+#include <stdlib.h>
 #if defined(SUPPORT_TEXTCNV)
 #include	"codecnv/textcnv.h"
 #endif

@@ -1,5 +1,5 @@
 #include	"compiler.h"
-
+#include <stdlib.h>
 
 LISTARRAY listarray_new(size_t listsize, UINT maxitems) {
 

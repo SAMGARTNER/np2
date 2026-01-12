@@ -11,6 +11,7 @@
 #include "sndcsec.h"
 #include "beep.h"
 #include "soundmng.h"
+#include <stdlib.h>
 #if defined(SUPPORT_WAVEREC)
 #include "common/wavefile.h"
 #endif	/* defined(SUPPORT_WAVEREC) */
@@ -159,7 +160,7 @@ static void streamfilewrite(UINT nSamples)
 			{
 				nSample = -32768;
 			}
-			// little endian‚È‚Ì‚Å satuation_s16‚Íg‚¦‚È‚¢
+			// little endianãªã®ã§ satuation_s16ã¯ä½¿ãˆãªã„
 			buf[i][0] = (UINT8)nSample;
 			buf[i][1] = (UINT8)(nSample >> 8);
 		}
@@ -297,11 +298,11 @@ void sound_changeclock(void) {
 		return;
 	}
 
-	// ‚Æ‚è‚ ‚¦‚¸ 25‚ÅŠ„‚èØ‚ê‚éB
+	// ã¨ã‚Šã‚ãˆãš 25ã§å‰²ã‚Šåˆ‡ã‚Œã‚‹ã€‚
 	clk = pccore.realclock / 25;
 	hz = soundcfg.rate / 25;
 
-	// ‚ÅAƒNƒƒbƒN”‚É‡‚¹‚Ä’²®B(64bit‰‰Z‚µ‚ë‚æ‚È“I)
+	// ã§ã€ã‚¯ãƒ­ãƒƒã‚¯æ•°ã«åˆã›ã¦èª¿æ•´ã€‚(64bitæ¼”ç®—ã—ã‚ã‚ˆãªçš„)
 	hzmax = (1 << (32 - 8)) / (clk >> 8);
 	while(hzmax < hz) {
 		clk = (clk + 1) >> 1;

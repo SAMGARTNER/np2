@@ -6,6 +6,7 @@
 #include	"iocore.h"
 #include	"dmax86.h"
 #include	"i286c.mcr"
+#include <stdlib.h>
 #if defined(ENABLE_TRAP)
 #include "trap/steptrap.h"
 #endif

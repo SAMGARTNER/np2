@@ -1,6 +1,6 @@
 #include	"compiler.h"
 #include	"midiout.h"
-
+#include <stdlib.h>
 
 #define	MIDIOUT_VERSION		0x116
 #define	MIDIOUT_VERSTRING	"VERMOUTH 1.16"

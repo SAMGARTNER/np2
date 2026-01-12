@@ -1,6 +1,6 @@
 #include	"compiler.h"
 #include	"resize.h"
-
+#include <stdlib.h>
 
 enum {
 	RESIZE_HDIF		= 0x01,

@@ -1,6 +1,6 @@
 #include	"compiler.h"
 #include	"getsnd.h"
-
+#include <stdlib.h>
 
 #if defined(__GNUC__)
 typedef struct {
