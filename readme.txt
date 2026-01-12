@@ -1,4 +1,4 @@
-Credits to YUI!!! It compiles and runs in macOS 15+ and ARM64. I added a few improvements to protect the aspect ratio when resizing the window, mouse syncing, initial folder when opening roms, hid the invisible files. I just couldn't take the retroArch UI in macOS.
+Credits to YUI!!! It compiles and runs in macOS 15+ and Apple Silicon. I added a few improvements to protect the aspect ratio when resizing the window, mouse syncing, initial folder when opening files, hid invisible files. I just couldn't take the retroArch UI in macOS.
 
 // ---- 定義
 
