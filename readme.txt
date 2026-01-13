@@ -1,5 +1,7 @@
 Credits to YUI!!! It compiles and runs in macOS 15+ and Apple Silicon. I added a few improvements to protect the aspect ratio when resizing the window, mouse syncing, initial folder when opening files, hid invisible files. I just couldn't take the retroArch UI in macOS.
 
+No need to copy SDL3.xcframework, it comes already included. You just need to copy into ~/Library/Application Support/np2 the FONT.ROM SOUND.ROM ITF.ROM files
+
 // ---- 定義
 
   最適化の為のメモリ使用量の抑制
